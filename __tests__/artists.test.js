@@ -22,7 +22,7 @@ describe('/artists', () => {
   });
 
   describe('POST /artists', () => {
-    xit('creates a new artist in the database', async () => {
+    it('creates a new artist in the database', async () => {
       const response = await request(app).post('/artists').send({
         name: 'Tame Impala',
         genre: 'Rock',
@@ -51,7 +51,7 @@ describe('/artists', () => {
     });
 
     describe('GET /artists', () => {
-      xit('gets all artist records', (done) => {
+      it('gets all artist records', (done) => {
         request(app)
           .get('/artists')
           .then((res) => {
@@ -68,7 +68,7 @@ describe('/artists', () => {
     });
 
     describe('GET /artists/:artistId', () => {
-      xit('gets artist record by id', (done) => {
+      it('gets artist record by id', (done) => {
         const artist = artists[0];
         request(app)
           .get(`/artists/${artist.id}`)
@@ -80,7 +80,7 @@ describe('/artists', () => {
           });
       });
 
-      xit('returns a 404 if the artist does not exist', (done) => {
+      it('returns a 404 if the artist does not exist', (done) => {
         request(app)
           .get('/artists/12345')
           .then((res) => {
@@ -92,7 +92,7 @@ describe('/artists', () => {
     });
 
     describe('PATCH /artists/:artistId', () => {
-      xit('updates artist genre by id', (done) => {
+      it('updates artist genre by id', (done) => {
         const artist = artists[0];
         request(app)
           .patch(`/artists/${artist.id}`)
@@ -106,7 +106,7 @@ describe('/artists', () => {
           });
       });
 
-      xit('returns a 404 if the artist does not exist', (done) => {
+      it('returns a 404 if the artist does not exist', (done) => {
         request(app)
           .patch('/artists/12345')
           .send({ genre: 'Psychedelic Rock' })
@@ -116,7 +116,34 @@ describe('/artists', () => {
             done();
           });
       });
+
+      it('updates artist name by id', (done) => {
+        const artist = artists[0];
+        request(app)
+          .patch(`/artists/${artist.id}`)
+          .send({ name: 'Elton John' })
+          .then((res) => {
+            expect(res.status).to.equal(200);
+            Artist.findByPk(artist.id, { raw: true }).then((updatedArtist) => {
+              expect(updatedArtist.name).to.equal('Elton John');
+              done();
+            });
+          });
+      });
+
+      it('returns a 404 if the artist does not exist', (done) => {
+        request(app)
+          .patch('/artists/12345')
+          .send({ name: 'Elton John' })
+          .then((res) => {
+            expect(res.status).to.equal(404);
+            expect(res.body.error).to.equal('The artist could not be found.');
+            done();
+          });
+      });
     });
+
+   
 
     describe('DELETE /artists/:artistId', () => {
       xit('deletes artist record by id', (done) => {
