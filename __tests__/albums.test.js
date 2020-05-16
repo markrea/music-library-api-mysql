@@ -67,4 +67,39 @@ describe('/albums', () => {
         });
     });
   });
+  describe('with albums in the database', () => {
+    let albums;
+    beforeEach((done) => {
+      Promise.all([
+        Album.create({ name: 'Innerspeaker', year: '2010', artist: artist.id }),
+        Album.create({ name: 'Lonerism', year: '2012', artist: artist.id }),
+        Album.create({ name: 'Currents', year: '2015', artist: artist.id }),
+      ]).then((documents) => {
+        albums = documents;
+        done();
+      });
+    });
+
+    describe('GET /artists/:artistId/albums', () => {
+      it('gets all albums by an artist', (done) => {
+        request(app)
+          .get(`/artists/${artist.id}/albums`)
+          .then((res) => {
+            expect(res.status).to.equal(200);
+            expect(res.body.name).to.equal(album.name);
+            expect(res.body.year).to.equal(album.year);
+            done();
+          });
+      });
+      it('returns a 404 if the artist does not exist', (done) => {
+        request(app)
+          .get('/artists/12345/albums')
+          .then((res) => {
+            expext(res.status.to.equal(404));
+            expects(res.body.error).to.equal('The artist could not be found.');
+            done();
+      });
+    });
+  });
+});
 });
