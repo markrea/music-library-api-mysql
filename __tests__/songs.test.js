@@ -38,9 +38,9 @@ describe('/songs', () => {
   });
 
   describe('POST /album/:albumId/song', () => {
-    xit('creates a new song under an album', (done) => {
+    it('creates a new song under an album', (done) => {
       request(app)
-        .post(`/album/${album.id}/song`)
+        .post(`/albums/${album.id}/song`)
         .send({
           artist: artist.id,
           name: 'Solitude Is Bliss',
@@ -53,7 +53,7 @@ describe('/songs', () => {
           expect(res.body.artistId).to.equal(artist.id);
           expect(res.body.albumId).to.equal(album.id);
           done();
-        });
+        }).catch(done);
     });
   });
 });

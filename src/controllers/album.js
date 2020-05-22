@@ -40,7 +40,7 @@ exports.getAlbumById = (req, res) => {
 exports.updateAlbumById = (req, res) => {
   const { id } = req.params;
   Album.update(req.body, { where: { id } }).then(([rowsUpdated]) => {
-    if(!rowsUpdated) {
+    if (!rowsUpdated) {
       res.status(404).json({ error: 'The album could not be found.' });
     } else {
       res.status(200).json(rowsUpdated);
@@ -50,7 +50,7 @@ exports.updateAlbumById = (req, res) => {
 exports.deleteAlbumById = (req, res) => {
   const { id } = req.params;
   Album.destroy({ where: { id } }).then(album => {
-    if(!album) {
+    if (!album) {
       res.status(404).json({ error: 'The album could not be found.' });
     } else {
       res.status(204).json(album);
