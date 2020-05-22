@@ -8,6 +8,7 @@ router
   .get('/:id', albumController.getAlbumById)
   .patch('/:id', albumController.updateAlbumById)
   .delete('/:id', albumController.deleteAlbumById)
-  .post('/:id/song', songController.createSong);
+  .post('/:id/songs', songController.createSong)
+  .get('/:id/songs', songController.getSongByAlbumId);
 
 module.exports = router;
