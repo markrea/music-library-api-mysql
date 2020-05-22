@@ -117,7 +117,7 @@ describe('/albums', () => {
             expect(res.body.year).to.equal(album.year);
             expect(res.body.artistId).to.equal(album.artistId);
             done();
-          }).catch(done);
+          });
       });
 
       it('returns a 404 if the album does not exist', (done) => {
@@ -127,7 +127,7 @@ describe('/albums', () => {
             expect(res.status).to.equal(404);
             expect(res.body.error).to.equal('The album could not be found.');
             done();
-          }).catch(done);
+          });
       });
     });
 
@@ -142,18 +142,64 @@ describe('/albums', () => {
             Album.findByPk(album.id, { raw: true }).then((updatedAlbum) => {
               expect(updatedAlbum.year).to.equal(2011);
               done();
-            }).catch(done);
+            });
           });
       });
       it('returns a 404 if the album does not exist', (done) => {
         request(app)
-        .patch('/albums/12345')
-        .send({ year:2009 })
-        .then((res) => {
-          expect(res.status).to.equal(404);
-          expect(res.body.error).to.equal('The album could not be found.');
-          done();
-        }).catch(done);
+          .patch('/albums/12345')
+          .send({ year: 2009 })
+          .then((res) => {
+            expect(res.status).to.equal(404);
+            expect(res.body.error).to.equal('The album could not be found.');
+            done();
+          });
+      });
+      it('updates album name by album id', (done) => {
+        const album = albums[0];
+        request(app)
+          .patch(`/albums/${album.id}`)
+          .send({ name: 'Updated album title' })
+          .then((res) => {
+            expect(res.status).to.equal(200);
+            Album.findByPk(album.id, { raw: true }).then((updatedAlbum) => {
+              expect(updatedAlbum.name).to.equal('Updated album title');
+              done();
+            });
+          });
+      });
+      it('returns a 404 if the album does not exist', (done) => {
+        request(app)
+          .patch('/albums/12345')
+          .send({ name: 'Updated album title' })
+          .then((res) => {
+            expect(res.status).to.equal(404);
+            expect(res.body.error).to.equal('The album could not be found.');
+            done();
+          });
+      });
+    });
+    describe('DELETE /albums/:albumId', () => {
+      it('deletes an album record by id', (done) => {
+        const album = albums[0];
+        request(app)
+          .delete(`/albums/${album.id}`)
+          .then((res) => {
+            expect(res.status).to.equal(204);
+            Album.findByPk(album.id, { raw: true }).then((updatedAlbum) => {
+              expect(updatedAlbum).to.equal(null);
+              done();
+            });
+          });
+      });
+      it('returns a 404 if the album does not exist', (done) => {
+        request(app)
+          .delete('/albums/12345')
+          .then((res) => {
+            expect(res.status).to.equal(404);
+            expect(res.body.error).to.equal('The album could not be found.');
+            done();
+          });
       });
     });
 

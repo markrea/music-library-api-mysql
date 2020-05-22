@@ -5,6 +5,7 @@ const router = express.Router();
 
 router
 .get('/:id', albumController.getAlbumById)
-.patch('/:id', albumController.updateAlbumById);
+.patch('/:id', albumController.updateAlbumById)
+.delete('/:id', albumController.deleteAlbumById);
 
 module.exports = router;
