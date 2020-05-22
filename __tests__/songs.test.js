@@ -111,7 +111,29 @@ describe('/songs', () => {
             done();
           });
       });
-
-    })
-  })
+    });
+    describe('GET /songs/:songId', () => {
+      it('gets a song record by id', (done) => {
+        const song = songs[0];
+        request(app)
+        .get(`/songs/${song.id}`)
+        .then((res) => {
+          expect(res.status).to.equal(200);
+            expect(res.body.name).to.equal(song.name);
+            expect(res.body.artistId).to.equal(song.artistId);
+            expect(res.body.albumId).to.equal(song.albumId);
+            done();
+        }).catch(done);
+      });
+      it('returns a 404 if the song does not exist', (done) => {
+        request(app)
+        .get('/songs/12345')
+        .then((res) => {
+        expect(res.status).to.equal(404);
+        expect(res.body.error).to.equal('The song could not be found.');
+        done();
+      }).catch(done);
+    });
+    });
+  });
 });
