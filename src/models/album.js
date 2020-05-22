@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     year: DataTypes.INTEGER,
   };
-  
+
   const Album = sequelize.define('Album', schema);
   return Album;
 }

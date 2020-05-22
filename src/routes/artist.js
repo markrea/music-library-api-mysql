@@ -10,7 +10,8 @@ router
   .get('/:id', artistController.getArtistById)
   .patch('/:id', artistController.updateArtistById)
   .delete('/:id', artistController.deleteArtistById)
-  .post('/:id/albums', albumController.createAlbum);
+  .post('/:id/albums', albumController.createAlbum)
+  .get('/:id/albums', albumController.getAlbumsByArtistId);
 
 
 module.exports = router;
