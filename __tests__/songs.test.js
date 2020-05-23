@@ -116,24 +116,49 @@ describe('/songs', () => {
       it('gets a song record by id', (done) => {
         const song = songs[0];
         request(app)
-        .get(`/songs/${song.id}`)
-        .then((res) => {
-          expect(res.status).to.equal(200);
+          .get(`/songs/${song.id}`)
+          .then((res) => {
+            expect(res.status).to.equal(200);
             expect(res.body.name).to.equal(song.name);
             expect(res.body.artistId).to.equal(song.artistId);
             expect(res.body.albumId).to.equal(song.albumId);
             done();
-        }).catch(done);
+          });
       });
       it('returns a 404 if the song does not exist', (done) => {
         request(app)
-        .get('/songs/12345')
-        .then((res) => {
-        expect(res.status).to.equal(404);
-        expect(res.body.error).to.equal('The song could not be found.');
-        done();
-      }).catch(done);
+          .get('/songs/12345')
+          .then((res) => {
+            expect(res.status).to.equal(404);
+            expect(res.body.error).to.equal('The song could not be found.');
+            done();
+          });
+      });
     });
+    describe('PATCH /songs/:songId', () => {
+      it('updates a song name by song id', (done) => {
+        const song = songs[0];
+        request(app)
+          .patch(`/songs/${song.id}`)
+          .send({ name: 'updated song1' })
+          .then((res) => {
+            expect(res.status).to.equal(200);
+            Song.findByPk(song.id, { raw: true }).then((updatedSong) => {
+              expect(updatedSong.name).to.equal('updated song1');
+              done();
+            }).catch(done);
+          });
+      });
+      it('returns a 404 if the album does not exist', (done) => {
+        request(app)
+          .patch(`/songs/12345`)
+          .send({ name: 'updated song1' })
+          .then((res) => {
+            expect(res.status).to.equal(404);
+            expect(res.body.error).to.equal('The song could not be found.');
+            done();
+          }).catch(done);
+      });
     });
   });
 });

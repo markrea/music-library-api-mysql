@@ -38,3 +38,13 @@ exports.getSongById = (req, res) => {
     };
   });
 };
+exports.updateSongById = (req, res) => {
+  const { id } = req.params;
+  Song.update(req.body, { where: { id } }).then(([rowsUpdated]) => {
+    if(!rowsUpdated) {
+      res.status(404).json({ error: 'The song could not be found.'});
+    } else {
+       res.status(200).json(rowsUpdated);
+    };
+  });
+};
