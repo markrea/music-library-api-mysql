@@ -28,7 +28,12 @@ exports.getAlbumsByArtistId = (req, res) => {
 
 exports.getAlbumById = (req, res) => {
   const { id } = req.params;
-  Album.findByPk(id).then(album => {
+  Album.findByPk(id, {
+    include: [{
+      model: Artist,
+      as: 'artist',
+    }]
+  }).then(album => {
     if (!album) {
       res.status(404).json({ error: 'The album could not be found.' });
     } else {
@@ -57,3 +62,4 @@ exports.deleteAlbumById = (req, res) => {
     };
   });
 };
+

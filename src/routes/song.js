@@ -5,6 +5,7 @@ const router = express.Router();
 
 router
 .get('/:id', songController.getSongById)
-.patch('/:id', songController.updateSongById);
+.patch('/:id', songController.updateSongById)
+.delete('/:id', songController.deleteSongById);
 
 module.exports = router;

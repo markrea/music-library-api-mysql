@@ -122,8 +122,11 @@ describe('/songs', () => {
             expect(res.body.name).to.equal(song.name);
             expect(res.body.artistId).to.equal(song.artistId);
             expect(res.body.albumId).to.equal(song.albumId);
+            expect(res.body.artist).to.be.an('object');
+            expect(res.body.album).to.be.an('object');
+            
             done();
-          });
+          }).catch(done);
       });
       it('returns a 404 if the song does not exist', (done) => {
         request(app)
@@ -146,7 +149,7 @@ describe('/songs', () => {
             Song.findByPk(song.id, { raw: true }).then((updatedSong) => {
               expect(updatedSong.name).to.equal('updated song1');
               done();
-            }).catch(done);
+            });
           });
       });
       it('returns a 404 if the album does not exist', (done) => {
@@ -157,7 +160,30 @@ describe('/songs', () => {
             expect(res.status).to.equal(404);
             expect(res.body.error).to.equal('The song could not be found.');
             done();
-          }).catch(done);
+          });
+      });
+    });
+    describe('DELETE /songs/:songId', () => {
+      it('deletes an song record by id', (done) => {
+        const song = songs[0];
+        request(app)
+          .delete(`/songs/${song.id}`)
+          .then((res) => {
+            expect(res.status).to.equal(204);
+            Song.findByPk(song.id, { raw: true }).then((deletedSong) => {
+              expect(deletedSong).to.equal(null);
+              done();
+            });
+          });
+      });
+      it('returns a 404 if the song does not exist', (done) => {
+        request(app)
+          .delete('/songs/12345')
+          .then((res) => {
+            expect(res.status).to.equal(404);
+            expect(res.body.error).to.equal('The song could not be found.');
+            done();
+          });
       });
     });
   });
